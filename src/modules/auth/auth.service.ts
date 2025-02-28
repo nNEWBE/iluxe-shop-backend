@@ -1,0 +1,97 @@
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
+import { User } from "../user/user.model"
+import config from "../../config";
+import { createToken, verifyToken } from "./auth.utils";
+
+const regsiterUserIntoDB = async (name: string, email: string, password: string) => {
+    const isEmailExist = await User.isUserExistsByEmail(email);
+    if (isEmailExist) {
+        throw new AppError('email',
+            httpStatus.BAD_REQUEST,
+            `${email} already exists!`,
+        );
+    }
+    const result = User.create({
+        name,
+        email,
+        password
+    })
+
+    return result;
+}
+
+const loginUserIntoDB = async (email: string, password: string) => {
+    const user = await User.isUserExistsByEmail(email);
+    if (!user) {
+        throw new AppError("email", httpStatus.NOT_FOUND, 'User does not exists !!');
+    }
+
+    if (user.isBlocked) {
+        throw new AppError("blocked", httpStatus.UNAUTHORIZED, 'User is blocked !!');
+    }
+
+    const isPasswordMatched = await User.isPasswordMatched(password, user.password);
+    if (!isPasswordMatched) {
+        throw new AppError("password", httpStatus.UNAUTHORIZED, 'Password does not match !!');
+    }
+
+    const jwtPayload = {
+        userId: user.email,
+        role: user.role,
+    };
+
+    const accessToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_expires_in as string,
+    );
+
+    const refreshToken = createToken(
+        jwtPayload,
+        config.jwt_refresh_secret as string,
+        config.jwt_refresh_expires_in as string,
+    );
+
+    return {
+        accessToken,
+        refreshToken
+    }
+
+}
+
+const refreshToken = async (token: string) => {
+    const decoded = verifyToken(token, config.jwt_refresh_secret as string);
+
+    const { userId } = decoded;
+    const user = await User.isUserExistsByEmail(userId);
+
+    if (!user) {
+        throw new AppError("user", httpStatus.NOT_FOUND, 'This user is not found !');
+    }
+
+    if (user.isBlocked) {
+        throw new AppError("blocked", httpStatus.UNAUTHORIZED, 'User is blocked !!');
+    }
+
+    const jwtPayload = {
+        userId: user.email,
+        role: user.role,
+    };
+
+    const accessToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_expires_in as string,
+    );
+
+    return {
+        accessToken,
+    };
+};
+
+export const AuthServices = {
+    regsiterUserIntoDB,
+    loginUserIntoDB,
+    refreshToken
+}
