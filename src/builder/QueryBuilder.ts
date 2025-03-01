@@ -32,15 +32,12 @@ class QueryBuilder<T> {
 
     filter() {
         const queryObj = { ...this.query };
-        const author = {
-            author: queryObj.filter
-        }
-        const excludeFields = ['search', 'sortBy', 'sortOrder', 'limit', 'page', 'fields'];
-        excludeFields.forEach(el => delete queryObj[el]);
 
-        if (author) {
-            this.modelQuery = this.modelQuery.find(Object.keys(queryObj).length === 0 ? {} : author as FilterQuery<T>);
-        }
+        const excludeFields = ['search', 'sortBy', 'sortOrder', 'limit', 'page', 'fields'];
+
+        excludeFields.forEach((el) => delete queryObj[el]);
+
+        this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
         return this;
     }
@@ -58,6 +55,21 @@ class QueryBuilder<T> {
         const fields = (this.query.fields as string)?.split(',')?.join(' ') || '-__v';
         this.modelQuery = this.modelQuery.select(fields);
         return this;
+    }
+    
+    async countTotal() {
+        const totalQueries = this.modelQuery.getFilter();
+        const total = await this.modelQuery.model.countDocuments(totalQueries);
+        const page = Number(this?.query?.page) || 1;
+        const limit = Number(this?.query?.limit) || 10;
+        const totalPage = Math.ceil(total / limit);
+
+        return {
+            page,
+            limit,
+            total,
+            totalPage,
+        };
     }
 }
 

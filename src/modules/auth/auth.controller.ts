@@ -27,7 +27,7 @@ const loginUser = catchAsync(async (req, res) => {
         secure: config.node_env === 'production',
         httpOnly: true,
         sameSite: 'none',
-        maxAge: Number(config.jwt_refresh_max_age),
+        maxAge: Number(config.cookies_max_age),
     });
 
     sendResponse(res, {

@@ -3,6 +3,7 @@ import AppError from "../../errors/AppError";
 import { User } from "../user/user.model"
 import config from "../../config";
 import { createToken, verifyToken } from "./auth.utils";
+import { isUserExistsAndNotBlocked } from "../user/user.utils";
 
 const regsiterUserIntoDB = async (name: string, email: string, password: string) => {
     const isEmailExist = await User.isUserExistsByEmail(email);
@@ -23,13 +24,8 @@ const regsiterUserIntoDB = async (name: string, email: string, password: string)
 
 const loginUserIntoDB = async (email: string, password: string) => {
     const user = await User.isUserExistsByEmail(email);
-    if (!user) {
-        throw new AppError("email", httpStatus.NOT_FOUND, 'User does not exists !!');
-    }
 
-    if (user.isBlocked) {
-        throw new AppError("blocked", httpStatus.UNAUTHORIZED, 'User is blocked !!');
-    }
+    isUserExistsAndNotBlocked(user);
 
     const isPasswordMatched = await User.isPasswordMatched(password, user.password);
     if (!isPasswordMatched) {
@@ -66,13 +62,7 @@ const refreshToken = async (token: string) => {
     const { userId } = decoded;
     const user = await User.isUserExistsByEmail(userId);
 
-    if (!user) {
-        throw new AppError("user", httpStatus.NOT_FOUND, 'This user is not found !');
-    }
-
-    if (user.isBlocked) {
-        throw new AppError("blocked", httpStatus.UNAUTHORIZED, 'User is blocked !!');
-    }
+    isUserExistsAndNotBlocked(user);
 
     const jwtPayload = {
         userId: user.email,

@@ -17,8 +17,14 @@ const loginUserValidationSchema = z.object({
     })
 });
 
+const blockUserValidationSchema = z.object({
+    body: z.object({
+        isBlocked: z.boolean({ invalid_type_error: "isBlocked must be boolean", required_error: "isBlocked is required" }),
+    })
+})
 
 export const UserValidation = {
     registerUserValidationSchema,
-    loginUserValidationSchema
+    loginUserValidationSchema,
+    blockUserValidationSchema
 }

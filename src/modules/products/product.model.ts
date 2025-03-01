@@ -19,8 +19,9 @@ const ProductSchema: Schema = new Schema(
         },
         description: { type: String, required: true },
         productImage: { type: String, required: true },
-        author: { type: Schema.Types.ObjectId, required: true },
+        author: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         quantity: { type: Number, required: true },
+        rating: { type: Number, required: true },
         inStock: { type: Boolean, required: true },
     },
     {

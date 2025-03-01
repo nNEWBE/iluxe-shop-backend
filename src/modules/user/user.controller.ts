@@ -1,10 +1,10 @@
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { User } from "./user.model";
+import { UserServices } from "./user.service";
 
 const getAllUsers = catchAsync(async (req, res) => {
-    const result = await User.find({});
+    const result = await UserServices.getAllUsersFromDB();
     sendResponse(res, {
         success: true,
         message: 'Users fetched successfully',
@@ -13,6 +13,32 @@ const getAllUsers = catchAsync(async (req, res) => {
     });
 });
 
+const blockUser = catchAsync(async (req, res) => {
+    const id = req.params.id ;
+    const {isBlocked} = req.body;
+    const result = await UserServices.blockUserFromDB(id,isBlocked);
+    sendResponse(res, {
+        success: true,
+        message: 'User blocked successfully',
+        statusCode: httpStatus.OK,
+        data: result
+    });
+});
+
+const getMe = catchAsync(async (req, res) => {
+    const { userId } = req.user;
+    const result = await UserServices.getMe(userId);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User is retrieved succesfully',
+        data: result,
+    });
+});
+
 export const UserController = {
-    getAllUsers
+    getAllUsers,
+    blockUser,
+    getMe
 };
