@@ -25,7 +25,7 @@ const refreshTokenValidationSchema = z.object({
     }),
 });
 
-export const AuthValidation = {
+export const AuthValidations = {
     loginValidationSchema,
     changePasswordValidationSchema,
     refreshTokenValidationSchema,

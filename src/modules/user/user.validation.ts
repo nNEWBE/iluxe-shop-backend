@@ -23,7 +23,7 @@ const blockUserValidationSchema = z.object({
     })
 })
 
-export const UserValidation = {
+export const UserValidations = {
     registerUserValidationSchema,
     loginUserValidationSchema,
     blockUserValidationSchema

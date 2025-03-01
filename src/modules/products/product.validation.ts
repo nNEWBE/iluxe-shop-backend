@@ -39,7 +39,7 @@ const updateProductValidationSchema = z.object({
     body: createProductValidationSchema.shape.body.partial(),
 });
 
-export const ProductValidation = {
+export const ProductValidations = {
     createProductValidationSchema,
     updateProductValidationSchema,
 };

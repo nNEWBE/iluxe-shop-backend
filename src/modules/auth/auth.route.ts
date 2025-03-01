@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { AuthControllers } from "./auth.controller";
-import { UserValidation } from "../user/user.validation";
+import { UserValidations } from "../user/user.validation";
 import validateRequest from "../../middlewares/validateRequest";
-import { AuthValidation } from "./auth.validation";
+import { AuthValidations } from "./auth.validation";
 
 const router = Router();
 
-router.post('/register', validateRequest(UserValidation.registerUserValidationSchema), AuthControllers.registerUser)
-router.post('/login', validateRequest(UserValidation.loginUserValidationSchema), AuthControllers.loginUser)
+router.post('/register', validateRequest(UserValidations.registerUserValidationSchema), AuthControllers.registerUser)
+router.post('/login', validateRequest(UserValidations.loginUserValidationSchema), AuthControllers.loginUser)
 router.post(
     '/refresh-token',
-    validateRequest(AuthValidation.refreshTokenValidationSchema),
+    validateRequest(AuthValidations.refreshTokenValidationSchema),
     AuthControllers.refreshToken,
 );
 

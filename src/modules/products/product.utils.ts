@@ -16,7 +16,7 @@ export const checkProductOwnership = async (userId: Types.ObjectId, user: JwtPay
     }
 }
 
-export const checkProductExist = async (productId: string) => {
+export const checkProductExist = async (productId: string | Types.ObjectId) => {
     const isProductExist = await Product.findById(productId);
     if (!isProductExist) {
         throw new AppError("product", httpStatus.NOT_FOUND, 'Product does not exists !!');
