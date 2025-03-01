@@ -1,13 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtPayload } from 'jsonwebtoken';
-import { IProduct } from './product.interface';
+import { IProduct, TFile } from './product.interface';
 import Product from './product.model';
 import { checkProductExist, checkProductOwnership } from './product.utils';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
+import mongoose from 'mongoose';
 
-const createStationaryProductIntoDB = async (productData: IProduct, user: JwtPayload) => {
+const createStationaryProductIntoDB = async (file: TFile | undefined, productData: IProduct, user: JwtPayload) => {
+
   await checkProductOwnership(productData.author, user);
-  const result = (await Product.create(productData)).populate("author");
-  return result;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    if (file) {
+      const imageName = productData.name;
+      const path = file?.path;
+
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      productData.productImage = secure_url as string;
+    }
+    const result = (await Product.create([productData], { session }));
+    await session.commitTransaction();
+    await session.endSession();
+
+    const populatedResult = await Product.findById(result).populate("author");
+    return populatedResult;
+  }
+  catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
+  }
 };
 
 const getAllStationaryProductsFromDB = async (query: Record<string, unknown>) => {

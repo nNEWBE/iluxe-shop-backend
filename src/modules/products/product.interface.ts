@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IProduct {
+    _id: Types.ObjectId;
     name: string;
     brand: string;
     price: number;
@@ -14,6 +15,17 @@ export interface IProduct {
     productImage: string;
     author: Types.ObjectId;
     quantity: number;
-    rating:number;
+    rating: number;
     inStock: boolean;
+}
+
+export type TFile = {
+    fieldname: string,
+    originalname: string,
+    encoding: string,
+    mimetype: string,
+    destination: string,
+    filename: string,
+    path: string,
+    size: number
 }

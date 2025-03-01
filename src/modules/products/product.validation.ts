@@ -18,8 +18,8 @@ const createProductValidationSchema = z.object({
         category: categoryEnum,
         description: z.string({ required_error: "Description is required" }),
         productImage: z
-            .string({ required_error: "Product image is required" })
-            .url("Invalid product image URL"),
+            .string()
+            .url("Invalid product image URL").optional(),
         author: z
             .string({ required_error: "Author is required" })
             .regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId"),

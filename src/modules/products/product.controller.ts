@@ -5,7 +5,7 @@ import httpStatus from 'http-status';
 import { ProductServices } from './product.service';
 
 const createStationaryProduct = catchAsync(async (req: Request, res: Response) => {
-    const result = await ProductServices.createStationaryProductIntoDB(req.body,req.user);
+    const result = await ProductServices.createStationaryProductIntoDB(req.file,req.body,req.user);
     sendResponse(res, {
         success: true,
         message: 'Product created successfully',

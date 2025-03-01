@@ -18,7 +18,7 @@ const ProductSchema: Schema = new Schema(
             required: true,
         },
         description: { type: String, required: true },
-        productImage: { type: String, required: true },
+        productImage: { type: String},
         author: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         quantity: { type: Number, required: true },
         rating: { type: Number, required: true },

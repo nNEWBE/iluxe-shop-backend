@@ -1,5 +1,5 @@
 import { User } from "./user.model";
-import { isUserExistsAndNotBlocked } from "./user.utils";
+import { checkBlockUser } from "./user.utils";
 
 const getAllUsersFromDB = async () => {
     const result = await User.find();
@@ -8,7 +8,7 @@ const getAllUsersFromDB = async () => {
 
 const blockUserFromDB = async (id: string, isBlocked: boolean) => {
     const user = await User.isUserExistsById(id);
-    isUserExistsAndNotBlocked(user);
+    checkBlockUser(user,isBlocked);
     const result = await User.findByIdAndUpdate(id, { isBlocked }, { new: true });
     return result;
 };

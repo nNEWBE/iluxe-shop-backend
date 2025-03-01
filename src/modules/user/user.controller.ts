@@ -14,12 +14,12 @@ const getAllUsers = catchAsync(async (req, res) => {
 });
 
 const blockUser = catchAsync(async (req, res) => {
-    const id = req.params.id ;
-    const {isBlocked} = req.body;
-    const result = await UserServices.blockUserFromDB(id,isBlocked);
+    const id = req.params.id;
+    const { isBlocked } = req.body;
+    const result = await UserServices.blockUserFromDB(id, isBlocked);
     sendResponse(res, {
         success: true,
-        message: 'User blocked successfully',
+        message: isBlocked ? 'User blocked successfully' : 'User unblocked successfully',
         statusCode: httpStatus.OK,
         data: result
     });
