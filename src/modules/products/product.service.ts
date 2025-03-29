@@ -21,6 +21,12 @@ const createStationaryProductIntoDB = async (file: TFile | undefined, productDat
       const { secure_url } = await sendImageToCloudinary(imageName, path);
       productData.productImage = secure_url as string;
     }
+    if(productData.quantity > 0) {
+      productData.inStock = true
+    }
+    else {
+      productData.inStock = false
+    }
     const result = (await Product.create([productData], { session }));
     await session.commitTransaction();
     await session.endSession();
@@ -53,20 +59,39 @@ const getAllStationaryProductsFromDB = async (query: Record<string, unknown>) =>
   }
 };
 
+const getAllStationaryProductsWithoutQueryFromDB = async () => {
+  const result = Product.find().populate("author")
+
+  return result;
+};
+
 const getSingleStationaryProductFromDB = async (id: string) => {
   await checkProductExist(id);
-  const result = await Product.findById(id);
+  const result = await Product.findById(id).populate("author");
   return result;
 };
 
 const updateStationaryProductFromDB = async (id: string, productData: Partial<IProduct>) => {
-  await checkProductExist(id);
+  const product = await checkProductExist(id);
+  const newQuantity = productData.quantity ?? product.quantity;
+  if (product.quantity === 0 && product.inStock === false && newQuantity > 0) {
+    product.inStock = true;
+  }
+  if (product.quantity > 0 && product.inStock === true && newQuantity === 0) {
+    product.inStock = false;
+  }
+  if (product.isModified("inStock")) {
+    await product.save();
+  }
   const result = await Product.findByIdAndUpdate(id, productData, {
     new: true,
     runValidators: true,
   });
+
   return result;
 };
+
+
 
 const deleteStationaryProductFromDB = async (id: string) => {
   await checkProductExist(id);
@@ -77,6 +102,7 @@ const deleteStationaryProductFromDB = async (id: string) => {
 export const ProductServices = {
   createStationaryProductIntoDB,
   getAllStationaryProductsFromDB,
+  getAllStationaryProductsWithoutQueryFromDB,
   getSingleStationaryProductFromDB,
   updateStationaryProductFromDB,
   deleteStationaryProductFromDB,

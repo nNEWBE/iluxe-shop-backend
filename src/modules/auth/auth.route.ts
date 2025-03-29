@@ -8,6 +8,7 @@ const router = Router();
 
 router.post('/register', validateRequest(UserValidations.registerUserValidationSchema), AuthControllers.registerUser)
 router.post('/login', validateRequest(UserValidations.loginUserValidationSchema), AuthControllers.loginUser)
+router.post('/logout', AuthControllers.logoutUser)
 router.post(
     '/refresh-token',
     validateRequest(AuthValidations.refreshTokenValidationSchema),

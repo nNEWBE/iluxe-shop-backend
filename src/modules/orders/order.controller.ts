@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
     const orderData = req.body;
-    const order = await OrderServices.createOrderIntoDB(orderData);
+    const order = await OrderServices.createOrderIntoDB(orderData,req.ip!);
     sendResponse(res, {
         success: true,
         message: 'Order created successfully',
@@ -14,6 +14,18 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
         data: order
     })
 });
+
+const verifyPayment = catchAsync(async (req, res) => {
+    const order = await OrderServices.verifyPayment(req.query.order_id as string);
+
+    sendResponse(res, {
+        success: true,
+        message: "Order verified successfully",
+        statusCode: httpStatus.CREATED,
+        data: order,
+    });
+});
+
 
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
     const data = await OrderServices.getAllOrdersFromDB();
@@ -24,6 +36,17 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
         data
     })
 })
+
+const getSingleUserOrders = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.userId;
+    const data = await OrderServices.getSingleUserOrdersFromDB(id);
+    sendResponse(res, {
+        success: true,
+        message: 'Orders retrieved successfully',
+        statusCode: httpStatus.OK,
+        data
+    })
+});
 
 const updateOrderStatus = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.orderId;
@@ -61,7 +84,9 @@ const calculateRevenue = catchAsync(async (req: Request, res: Response) => {
 
 export const OrderController = {
     createOrder,
+    verifyPayment,
     getAllOrders,
+    getSingleUserOrders,
     calculateRevenue,
     updateOrderStatus,
     deleteOrder,

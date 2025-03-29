@@ -16,7 +16,7 @@ export interface IProduct {
     author: Types.ObjectId;
     quantity: number;
     rating: number;
-    inStock: boolean;
+    inStock?: boolean;
 }
 
 export type TFile = {

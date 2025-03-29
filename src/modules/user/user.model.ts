@@ -7,16 +7,18 @@ const userSchema = new Schema<IUser, UserModel>({
     name: {
         type: String,
         required: true,
+        trim: true,
     },
     email: {
         type: String,
+        immutable: true,     
         required: true,
         unique: true,
+        trim: true,
     },
     password: {
         type: String,
         required: true,
-        minlength: 4,
         select: false,
     },
     role: {
@@ -24,6 +26,9 @@ const userSchema = new Schema<IUser, UserModel>({
         enum: ["admin", "user"],
         default: "user",
     },
+    phone: { type: String, default: "N/A" },
+    address: { type: String, default: "N/A" },
+    city: { type: String, default: "N/A" },
     isBlocked: {
         type: Boolean,
         default: false,

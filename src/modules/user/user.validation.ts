@@ -17,6 +17,16 @@ const loginUserValidationSchema = z.object({
     })
 });
 
+const updateUserValidationSchema = z.object({
+    body: z.object({
+        name: z.string({ invalid_type_error: "Name must be a string"}).optional(),
+        email: z.string({ invalid_type_error: "Email must be a string"}).email({ message: "Invalid email address" }).optional(),
+        phone: z.string({ invalid_type_error: "Phone must be a string" }).optional(),
+        address: z.string({ invalid_type_error: "Address must be a string"}).optional(),
+        city: z.string({ invalid_type_error: "City must be a string" }).optional(),
+    })
+})
+
 const blockUserValidationSchema = z.object({
     body: z.object({
         isBlocked: z.boolean({ invalid_type_error: "isBlocked must be boolean", required_error: "isBlocked is required" }),
@@ -26,5 +36,6 @@ const blockUserValidationSchema = z.object({
 export const UserValidations = {
     registerUserValidationSchema,
     loginUserValidationSchema,
+    updateUserValidationSchema,
     blockUserValidationSchema
 }

@@ -31,7 +31,7 @@ const createProductValidationSchema = z.object({
             .number({ required_error: "Rating is required" })
             .min(0, "Rating must be a positive number")
             .max(5, "Rating must be between 0 and 5"),
-        inStock: z.boolean(),
+        inStock: z.boolean().optional(),
     }),
 });
 

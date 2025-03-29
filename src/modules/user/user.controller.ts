@@ -13,6 +13,18 @@ const getAllUsers = catchAsync(async (req, res) => {
     });
 });
 
+const updateUser = catchAsync(async (req, res) => {
+    const id = req.params.id;
+    const body = req.body;
+    const result = await UserServices.updateUserFromDB(id, body);
+    sendResponse(res, {
+        success: true,
+        message: 'User updated successfully',
+        statusCode: httpStatus.OK,
+        data: result
+    });
+})
+
 const blockUser = catchAsync(async (req, res) => {
     const id = req.params.id;
     const { isBlocked } = req.body;
@@ -39,6 +51,7 @@ const getMe = catchAsync(async (req, res) => {
 
 export const UserController = {
     getAllUsers,
+    updateUser,
     blockUser,
     getMe
 };

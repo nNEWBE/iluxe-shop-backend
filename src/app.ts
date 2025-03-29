@@ -8,7 +8,7 @@ import router from "./routes";
 const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5173', 'https://iluxe-shop-frontend.vercel.app'], credentials: true }));
 app.use('/api', router);
 app.get('/', (req, res) => {
     res.send('iLuxe shop is running');

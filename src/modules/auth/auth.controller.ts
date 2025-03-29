@@ -42,6 +42,21 @@ const loginUser = catchAsync(async (req, res) => {
     });
 })
 
+const logoutUser = catchAsync(async (req, res) => {
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: config.node_env === "production",
+        sameSite: "none",
+    });
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Logout successful",
+    });
+
+});
+
 const refreshToken = catchAsync(async (req, res) => {
     const { refreshToken } = req.cookies;
     const { accessToken } = await AuthServices.refreshToken(refreshToken);
@@ -61,5 +76,6 @@ const refreshToken = catchAsync(async (req, res) => {
 export const AuthControllers = {
     registerUser,
     loginUser,
+    logoutUser,
     refreshToken
 };

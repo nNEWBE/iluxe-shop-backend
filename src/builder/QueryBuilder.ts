@@ -34,17 +34,30 @@ class QueryBuilder<T> {
         const queryObj = { ...this.query };
 
         const excludeFields = ['search', 'sortBy', 'sortOrder', 'limit', 'page', 'fields'];
-
         excludeFields.forEach((el) => delete queryObj[el]);
 
-        this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+        const filterQuery: Record<string, unknown> = {};
+
+        Object.keys(queryObj).forEach((key) => {
+            if (typeof queryObj[key] === 'string' && queryObj[key].includes('-')) {
+                const [min, max] = queryObj[key].split('-').map(Number);
+                if (!isNaN(min) && !isNaN(max)) {
+                    filterQuery[key] = { $gte: min, $lte: max };
+                }
+            } else {
+                filterQuery[key] = queryObj[key];
+            }
+        });
+
+        this.modelQuery = this.modelQuery.find(filterQuery as FilterQuery<T>);
 
         return this;
     }
 
+
     paginate() {
         const page = Number(this.query.page) || 1;
-        const limit = Number(this.query.limit) || 10;
+        const limit = Number(this.query.limit) || 6;
         const skip = (page - 1) * limit;
 
         this.modelQuery = this.modelQuery.skip(skip).limit(limit);
@@ -61,7 +74,7 @@ class QueryBuilder<T> {
         const totalQueries = this.modelQuery.getFilter();
         const total = await this.modelQuery.model.countDocuments(totalQueries);
         const page = Number(this?.query?.page) || 1;
-        const limit = Number(this?.query?.limit) || 10;
+        const limit = Number(this?.query?.limit) || 6;
         const totalPage = Math.ceil(total / limit);
 
         return {

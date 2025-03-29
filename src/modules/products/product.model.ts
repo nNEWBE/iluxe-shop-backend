@@ -22,7 +22,7 @@ const ProductSchema: Schema = new Schema(
         author: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         quantity: { type: Number, required: true },
         rating: { type: Number, required: true },
-        inStock: { type: Boolean, required: true },
+        inStock: { type: Boolean},
     },
     {
         timestamps: true,

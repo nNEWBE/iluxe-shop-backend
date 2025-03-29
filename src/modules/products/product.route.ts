@@ -14,6 +14,7 @@ router.post('/create', upload.single('file'),
         next();
     }, auth(USER_ROLE.user, USER_ROLE.admin), validateRequest(ProductValidations.createProductValidationSchema), ProductControllers.createStationaryProduct)
 router.get('/', ProductControllers.getAllStationaryProducts)
+router.get('/all', ProductControllers.getAllStationaryProductsWithoutQuery)
 router.get('/:productId', ProductControllers.getSingleStationaryProduct)
 router.patch('/:productId', auth(USER_ROLE.admin, USER_ROLE.user), validateRequest(ProductValidations.updateProductValidationSchema), ProductControllers.updateStationaryProduct)
 router.delete('/:productId', ProductControllers.deleteStationaryProduct)

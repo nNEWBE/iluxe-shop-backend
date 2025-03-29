@@ -33,6 +33,7 @@ const loginUserIntoDB = async (email: string, password: string) => {
     }
 
     const jwtPayload = {
+        userName: user.name,
         userId: user.email,
         role: user.role,
     };
@@ -65,6 +66,7 @@ const refreshToken = async (token: string) => {
     isUserExistsAndNotBlocked(user);
 
     const jwtPayload = {
+        userName: user.name,
         userId: user.email,
         role: user.role,
     };

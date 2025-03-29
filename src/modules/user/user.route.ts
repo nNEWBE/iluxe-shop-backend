@@ -8,6 +8,7 @@ import { USER_ROLE } from "./user.constant";
 const router = Router();
 
 router.get('/', UserController.getAllUsers)
+router.patch('/update-user/:id', validateRequest(UserValidations.updateUserValidationSchema), UserController.updateUser)
 router.patch('/change-status/:id', validateRequest(UserValidations.blockUserValidationSchema), UserController.blockUser)
 router.get('/me', auth(USER_ROLE.admin, USER_ROLE.user), UserController.getMe)
 

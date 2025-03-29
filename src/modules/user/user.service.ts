@@ -6,6 +6,11 @@ const getAllUsersFromDB = async () => {
     return result;
 };
 
+const updateUserFromDB = async (id: string, body: Record<string, unknown>) => {
+    const result = await User.findByIdAndUpdate(id, body, { new: true });
+    return result;
+};
+
 const blockUserFromDB = async (id: string, isBlocked: boolean) => {
     const user = await User.isUserExistsById(id);
     checkBlockUser(user,isBlocked);
@@ -20,6 +25,7 @@ const getMe = async (id: string) => {
 
 export const UserServices = {
     getAllUsersFromDB,
+    updateUserFromDB,
     blockUserFromDB,
     getMe
 };

@@ -24,6 +24,16 @@ const getAllStationaryProducts = catchAsync(async (req: Request, res: Response) 
     })
 })
 
+const getAllStationaryProductsWithoutQuery = catchAsync(async (req: Request, res: Response) => {
+    const data = await ProductServices.getAllStationaryProductsWithoutQueryFromDB();
+    sendResponse(res, {
+        success: true,
+        message: 'Products fetched successfully',
+        statusCode: httpStatus.OK,
+        data
+    })  
+})
+
 const getSingleStationaryProduct = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.productId;
     const data = await ProductServices.getSingleStationaryProductFromDB(id);
@@ -62,6 +72,7 @@ export const ProductControllers = {
     createStationaryProduct,
     getAllStationaryProducts,
     getSingleStationaryProduct,
+    getAllStationaryProductsWithoutQuery,
     updateStationaryProduct,
     deleteStationaryProduct,
 };
