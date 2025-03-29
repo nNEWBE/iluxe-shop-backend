@@ -157,12 +157,3 @@ SP_PASSWORD=your_surjopayment_password
 SP_PREFIX=your_surjopayment_prefix
 SP_RETURN_URL=your_surjopayment_return_url
 ```
-
-## 💡 Contributing
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-branch`
-3. Commit your changes: `git commit -m 'Add feature'`
-4. Push to the branch: `git push origin feature-branch`
-5. Submit a pull request.
-
----
